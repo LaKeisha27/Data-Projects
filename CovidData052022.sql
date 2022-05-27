@@ -1,3 +1,7 @@
+--Covid19 Data Exploration as of May 26, 2022
+
+--Skills used: Joins, CTE's, Temp Tables, Windows Functions, Aggregate Functions, Creating Views, Converting Data Types
+
 
 -- Importing the Data into Tables to see what will be shown
 
@@ -117,7 +121,7 @@ ORDER BY 2,3
 
 --View for later visualizations
 
-CREATE VIEW TotalPopulationVaxxed AS
+CREATE VIEW TotalPopulationVaxxed 
 SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations,
 SUM(Cast(vac.new_vaccinations AS bigint)) OVER (Partition by dea.location ORDER BY dea.location, dea.date) AS Total_Vaxxed
 FROM projects..CovidDeaths dea
@@ -127,25 +131,25 @@ and dea.date = vac.date
 WHERE dea.continent IS NOT NULL
 
 
-CREATE VIEW Global_Numbers AS
+CREATE VIEW Global_Numbers 
 SELECT  date, sum(new_cases) AS Total_Cases, SUM(cast(new_deaths AS int)) AS Total_Deaths, SUM(cast(new_deaths AS int))/SUM(new_cases) * 100 AS DeathPercentage
 FROM projects..CovidDeaths
 WHERE continent IS NOT NULL 
 GROUP BY date
 
-CREATE VIEW Continent_Death_Count AS
+CREATE VIEW Continent_Death_Count 
 SELECT continent,  MAX(cast(total_deaths AS int)) AS TotalDeathCount 
 FROM projects..CovidDeaths
 WHERE continent IS NOT NULL
 GROUP BY continent
 
-CREATE VIEW Country_Death_Count AS
+CREATE VIEW Country_Death_Count 
 SELECT Location,  MAX(cast(total_deaths AS int)) AS TotalDeathCount 
 FROM projects..CovidDeaths
 WHERE continent IS NOT NULL
 GROUP BY location
 
-CREATE VIEW Infection_Rate AS
+CREATE VIEW Infection_Rate 
 SELECT Location, population, MAX(total_cases) AS HighestInfectionCount, MAX((total_cases/population))*100 AS PercentInfected
 FROM projects..CovidDeaths
 GROUP BY location, population
